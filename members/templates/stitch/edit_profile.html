@@ -1,0 +1,33 @@
+{% extends "members/base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+
+<div class="max-w-4xl mx-auto py-10 px-6">
+
+    <h1 class="text-3xl font-bold mb-8">
+        Edit Profile
+    </h1>
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        class="space-y-6"
+    >
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button
+            type="submit"
+            class="px-6 py-3 bg-blue-600 text-white rounded-lg"
+        >
+            Save Changes
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

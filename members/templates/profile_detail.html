@@ -1,0 +1,84 @@
+{% extends 'members/base.html' %}
+
+{% block title %}
+{{ profile.user.get_full_name }} | AlumniConnect
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto py-10 px-6">
+
+    <div class="bg-white rounded-xl shadow p-8">
+
+        {% if profile.profile_picture %}
+            <img
+                src="{{ profile.profile_picture.url }}"
+                class="w-36 h-36 rounded-full object-cover"
+            >
+        {% endif %}
+
+        <h1 class="text-3xl font-bold mt-4">
+            {{ profile.user.get_full_name }}
+        </h1>
+
+        <p>{{ profile.role }}</p>
+
+        <p>{{ profile.department }}</p>
+
+        <p>{{ profile.company }}</p>
+
+        <p>{{ profile.designation }}</p>
+
+        <p>{{ profile.location }}</p>
+
+        <p class="mt-5">
+            {{ profile.bio }}
+        </p>
+
+        <hr class="my-8">
+
+        <h2 class="text-xl font-bold mb-4">
+            Skills
+        </h2>
+
+        {% for skill in profile.skills.all %}
+            <span class="px-3 py-1 bg-gray-200 rounded">
+                {{ skill.name }}
+            </span>
+        {% empty %}
+            <p>No skills added.</p>
+        {% endfor %}
+
+        <hr class="my-8">
+
+        <h2 class="text-xl font-bold mb-4">
+            Posts
+        </h2>
+
+        {% for post in posts %}
+
+            <div class="border rounded p-4 mb-4">
+
+                {{ post.content }}
+
+                <br>
+
+                <small>
+
+                    {{ post.created_at }}
+
+                </small>
+
+            </div>
+
+        {% empty %}
+
+            <p>No posts yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

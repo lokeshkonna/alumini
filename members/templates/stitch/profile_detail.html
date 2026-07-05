@@ -1,0 +1,189 @@
+{% extends "members/base.html" %}
+
+{% block title %}{{ profile.user.get_full_name }} | AlumniConnect{% endblock %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-6 py-10">
+
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+
+        <!-- Cover -->
+        <div class="h-52 bg-gradient-to-r from-blue-700 to-indigo-700"></div>
+
+        <div class="px-8 pb-8">
+
+            <!-- Profile Header -->
+            <div class="flex flex-col md:flex-row md:items-end gap-6 -mt-20">
+
+                {% if profile.profile_picture %}
+                    <img
+                        src="{{ profile.profile_picture.url }}"
+                        class="w-40 h-40 rounded-full border-4 border-white object-cover bg-white"
+                    >
+                {% else %}
+                    <div class="w-40 h-40 rounded-full bg-slate-200 border-4 border-white flex items-center justify-center text-5xl font-bold">
+                        {{ profile.user.username|first|upper }}
+                    </div>
+                {% endif %}
+
+                <div class="flex-1">
+
+                    <h1 class="text-4xl font-bold">
+                        {{ profile.user.get_full_name|default:profile.user.username }}
+                    </h1>
+
+                    <p class="text-gray-600 mt-2">
+                        {{ profile.designation }}
+                        {% if profile.company %}
+                            at {{ profile.company }}
+                        {% endif %}
+                    </p>
+
+                    <div class="flex flex-wrap gap-3 mt-4">
+
+                        <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700">
+                            {{ profile.role }}
+                        </span>
+
+                        {% if profile.department %}
+                        <span class="px-3 py-1 rounded-full bg-gray-100">
+                            {{ profile.department }}
+                        </span>
+                        {% endif %}
+
+                        {% if profile.class_year %}
+                        <span class="px-3 py-1 rounded-full bg-gray-100">
+                            {{ profile.class_year }}
+                        </span>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <div class="flex gap-3">
+
+                    <button class="px-6 py-3 rounded-lg bg-blue-700 text-white font-semibold">
+                        Connect
+                    </button>
+
+                    <button class="px-6 py-3 rounded-lg border border-blue-700 text-blue-700 font-semibold">
+                        Message
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- About -->
+            <div class="mt-10">
+
+                <h2 class="text-2xl font-bold mb-4">
+                    About
+                </h2>
+
+                <p class="text-gray-700 leading-7">
+
+                    {% if profile.bio %}
+                        {{ profile.bio }}
+                    {% else %}
+                        No bio available.
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+            <!-- Information -->
+            <div class="grid md:grid-cols-2 gap-8 mt-10">
+
+                <div>
+
+                    <h2 class="text-xl font-bold mb-4">
+                        Personal Information
+                    </h2>
+
+                    <div class="space-y-3">
+
+                        <p><strong>Email:</strong> {{ profile.user.email }}</p>
+
+                        <p><strong>Location:</strong> {{ profile.location|default:"Not specified" }}</p>
+
+                        <p><strong>Industry:</strong> {{ profile.industry|default:"Not specified" }}</p>
+
+                        <p><strong>Company:</strong> {{ profile.company|default:"Not specified" }}</p>
+
+                        <p><strong>Designation:</strong> {{ profile.designation|default:"Not specified" }}</p>
+
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <h2 class="text-xl font-bold mb-4">
+                        Skills
+                    </h2>
+
+                    <div class="flex flex-wrap gap-2">
+
+                        {% for skill in profile.skills.all %}
+                            <span class="px-4 py-2 rounded-full bg-blue-100 text-blue-700">
+                                {{ skill.name }}
+                            </span>
+                        {% empty %}
+                            <p>No skills added.</p>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Posts -->
+            <div class="mt-12">
+
+                <h2 class="text-2xl font-bold mb-6">
+                    Posts
+                </h2>
+
+                {% for post in posts %}
+
+                    <div class="border rounded-xl p-5 mb-5">
+
+                        <p class="text-gray-800">
+                            {{ post.content }}
+                        </p>
+
+                        {% if post.image_url %}
+                            <img
+                                src="{{ post.image_url }}"
+                                class="rounded-lg mt-4"
+                            >
+                        {% endif %}
+
+                        <p class="text-sm text-gray-500 mt-3">
+                            {{ post.created_at }}
+                        </p>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="border rounded-xl p-6 text-center text-gray-500">
+                        No posts available.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

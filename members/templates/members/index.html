@@ -1,0 +1,155 @@
+{% extends 'members/base.html' %}
+
+{% block title %}AlumniConnect | The Digital Atelier{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-[921px] flex flex-col items-center justify-center overflow-hidden px-8">
+    <!-- Mockup Three.js Globe Background -->
+    <div class="absolute inset-0 z-0 flex items-center justify-center opacity-20 mix-blend-multiply">
+        <div class="relative w-[800px] h-[800px] rounded-full border border-primary/10 animate-pulse bg-gradient-to-br from-primary/20 to-transparent">
+            <img class="w-full h-full object-cover rounded-full mix-blend-overlay" src="https://picsum.photos/seed/globe/800/800"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-surface"></div>
+        </div>
+    </div>
+    <div class="relative z-10 text-center max-w-4xl">
+        <h1 class="font-headline text-5xl md:text-7xl font-extrabold tracking-tight mb-8 bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">
+            The Global Alumni Network: Empowering Your Career Journey
+        </h1>
+        <!-- Search Component -->
+        <div class="mt-12 w-full max-w-2xl mx-auto">
+            <form action="{% url 'profiles' %}" method="GET" class="glass-card p-2 rounded-full flex items-center shadow-xl">
+                <div class="pl-6 flex items-center text-on-surface-variant">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <input name="q" class="w-full bg-transparent border-none focus:ring-0 text-lg px-4 font-body" placeholder="Search alumni by name, company, or industry..." type="text"/>
+                <button type="submit" class="bg-gradient-to-br from-primary to-primary-container text-white px-8 py-4 rounded-full font-bold hover:scale-105 transition-transform active:scale-95">
+                    Search
+                </button>
+            </form>
+        </div>
+        <div class="mt-12 flex flex-wrap justify-center gap-6">
+            <a href="{% url 'signup' %}" class="px-10 py-5 bg-gradient-to-br from-tertiary-container to-[#8b5500] text-white rounded-xl font-bold shadow-lg flex items-center gap-3 hover:scale-105 transition-transform active:scale-95">
+                Join the Network <span class="material-symbols-outlined">arrow_forward</span>
+            </a>
+            <a href="{% url 'mentorship' %}" class="px-10 py-5 bg-surface-container-lowest text-primary rounded-xl font-bold shadow-sm flex items-center gap-3 hover:scale-105 transition-transform active:scale-95">
+                Find Your Mentor <span class="material-symbols-outlined">school</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Alumni Carousel -->
+<section class="py-24 px-8 max-w-full overflow-hidden">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-end justify-between mb-12">
+            <div>
+                <span class="text-primary font-bold tracking-widest uppercase text-xs">Profiles</span>
+                <h2 class="font-headline text-4xl font-bold mt-2">Featured Alumni</h2>
+            </div>
+            <div class="flex gap-4">
+                <button class="p-3 rounded-full bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button class="p-3 rounded-full bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {% for profile in featured_profiles %}
+            <div class="glass-card p-6 rounded-xl hover:translate-y-[-8px] transition-transform duration-300">
+                <div class="relative mb-6">
+                    {% if profile.profile_picture %}
+                        <img class="w-full aspect-square object-cover rounded-lg" data-alt="Professional portrait" src="{{ profile.profile_picture.url }}"/>
+                    {% elif forloop.counter == 1 %}
+                        <img class="w-full aspect-square object-cover rounded-lg" data-alt="Professional portrait" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80"/>
+                    {% elif forloop.counter == 2 %}
+                        <img class="w-full aspect-square object-cover rounded-lg" data-alt="Professional portrait" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"/>
+                    {% elif forloop.counter == 3 %}
+                        <img class="w-full aspect-square object-cover rounded-lg" data-alt="Professional portrait" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"/>
+                    {% else %}
+                        <img class="w-full aspect-square object-cover rounded-lg" data-alt="Professional portrait" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80"/>
+                    {% endif %}
+                    <span class="absolute top-4 right-4 bg-primary/90 text-white text-[10px] font-bold px-3 py-1 rounded-full backdrop-blur-sm">Class of '{{ profile.class_year|slice:"-2:" }}</span>
+                </div>
+                <h3 class="font-bold text-xl mb-1">{{ profile.user.get_full_name|default:profile.user.username }}</h3>
+                <p class="text-sm text-on-surface-variant mb-4">{{ profile.designation }} at {{ profile.company }}</p>
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm text-primary">location_on</span>
+                    <span class="text-xs font-medium">{{ profile.location }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Placeholder for when DB is empty -->
+            <p class="text-center col-span-4 text-slate-400">No featured alumni yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Bento Grid: Events & Feed -->
+<section class="py-24 px-8 bg-surface-container-low">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Events Section (Large Column) -->
+            <div class="lg:col-span-8">
+                <div class="flex items-center justify-between mb-10">
+                    <h2 class="font-headline text-3xl font-bold">Upcoming Events</h2>
+                    <a class="text-primary font-bold text-sm flex items-center gap-2" href="{% url 'events' %}">View Calendar <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+                </div>
+                <div class="space-y-6">
+                    {% for event in events %}
+                    <div class="bg-surface-container-lowest p-6 rounded-xl flex flex-col md:flex-row gap-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="bg-secondary-fixed text-primary px-4 py-6 rounded-lg text-center min-w-[100px] flex flex-col justify-center">
+                            <span class="text-2xl font-black">{{ event.date|date:"d" }}</span>
+                            <span class="text-xs font-bold uppercase tracking-widest">{{ event.date|date:"M" }}</span>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-xl font-bold mb-2">{{ event.title }}</h3>
+                            <p class="text-on-surface-variant text-sm mb-4">{{ event.description|truncatewords:20 }}</p>
+                            <div class="flex flex-wrap gap-4 text-xs font-medium text-slate-500">
+                                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span> {{ event.time|time:"H:i A" }}</div>
+                                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-base">near_me</span> {{ event.location }}</div>
+                                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-amber-500">stars</span> {{ event.attendees.count }} Attendees</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <button class="px-6 py-3 bg-primary text-white rounded-lg font-bold text-sm">Register</button>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-slate-400">No upcoming events found.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Feed Section (Side Column) -->
+            <div class="lg:col-span-4">
+                <div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm h-full">
+                    <h2 class="font-headline text-2xl font-bold mb-8">Latest Posts</h2>
+                    <div class="space-y-8">
+                        {% for post in latest_posts %}
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-primary font-bold">
+                                {% if post.author.profile_picture %}
+                                    <img src="{{ post.author.profile_picture.url }}" class="rounded-full w-full h-full object-cover">
+                                {% else %}
+                                    {{ post.author.user.username|slice:":1"|upper }}
+                                {% endif %}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold mb-1">{{ post.author.user.username }} <span class="text-xs font-normal text-slate-400 ml-2">{{ post.created_at|timesince }} ago</span></p>
+                                <p class="text-sm text-on-surface-variant leading-relaxed line-clamp-2">{{ post.content }}</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-slate-400">No recent posts.</p>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'posts_feed' %}" class="block text-center w-full mt-10 py-4 bg-surface-container-low text-primary font-bold rounded-xl hover:bg-surface-container-high transition-colors">See All Updates</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

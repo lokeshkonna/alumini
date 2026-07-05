@@ -1,0 +1,199 @@
+{% extends 'members/base.html' %}
+
+{% block title %}Feed | AlumniConnect{% endblock %}
+
+{% block content %}
+<div class="pt-8 pb-24 px-4 md:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row gap-10">
+    <!-- SideNav (Left - Desktop Only) -->
+    <aside class="w-64 hidden lg:flex flex-col sticky top-28 h-fit font-['Inter'] text-sm p-6 space-y-2 bg-white rounded-2xl border border-slate-100 shadow-sm">
+        <a class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-100/50 hover:translate-x-1 transition-transform duration-200" href="{% url 'index' %}">
+            <span class="material-symbols-outlined">home</span> Home
+        </a>
+        <a class="flex items-center gap-3 p-3 bg-blue-50 text-blue-900 rounded-xl font-semibold hover:translate-x-1 transition-transform duration-200" href="">
+            <span class="material-symbols-outlined">rss_feed</span> Feed
+        </a>
+        <a class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-100/50 hover:translate-x-1 transition-transform duration-200" href="{% url 'profiles' %}">
+            <span class="material-symbols-outlined">group</span> Profiles
+        </a>
+        <a class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-100/50 hover:translate-x-1 transition-transform duration-200" href="{% url 'jobs' %}">
+            <span class="material-symbols-outlined">work</span> Jobs
+        </a>
+        <a class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-100/50 hover:translate-x-1 transition-transform duration-200" href="{% url 'messages' %}">
+            <span class="material-symbols-outlined">mail</span> Messages
+        </a>
+        <a class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-100/50 hover:translate-x-1 transition-transform duration-200" href="#">
+            <span class="material-symbols-outlined">settings</span> Settings
+        </a>
+    </aside>
+
+    <!-- Central Feed Content -->
+    <section class="flex-1 max-w-2xl space-y-8">
+        <!-- Post Creation Box -->
+        <!-- Post Creation Box -->
+
+        <div class="glass-card rounded-xl p-6 shadow-[0_20px_40px_rgba(0,35,111,0.04)]">
+
+            <form
+                method="POST"
+                action="{% url 'create_post' %}"
+                enctype="multipart/form-data"
+            >
+
+        {% csrf_token %}
+
+        <div class="flex items-start gap-4">
+
+        <div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200">
+
+        {% if user.profile.profile_picture %}
+        <img
+        src="{{ user.profile.profile_picture.url }}"
+        class="w-full h-full object-cover"
+        >
+        {% else %}
+        <div class="w-full h-full flex items-center justify-center font-bold">
+        {{ user.username|slice:":1"|upper }}
+        </div>
+        {% endif %}
+
+        </div>
+
+        <div class="flex-1">
+
+        {{ form.content }}
+
+        <div class="mt-4">
+
+        {{ form.post_image }}
+
+        </div>
+
+        <div class="mt-4 flex justify-end">
+
+        <button
+        type="submit"
+        class="bg-primary text-white px-6 py-2 rounded-lg font-semibold hover:bg-primary-container"
+        >
+
+        Post
+
+        </button>
+
+        </div>
+
+        </div>
+
+        </div>
+
+        </form>
+
+        </div>
+
+        <!-- Dynamic Feed Posts -->
+        {% for post in posts %}
+        <article class="glass-card rounded-xl overflow-hidden shadow-[0_20px_40px_rgba(0,35,111,0.04)]">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
+                            {% if post.author.profile_picture %}
+                        <img
+                            class="w-full h-full object-cover"
+                            src="{{ post.author.profile_picture.url }}"
+                            alt="{{ post.author.user.username }}"
+                        >
+                        {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-primary font-bold">{{ post.author.user.username|slice:":1"|upper }}</div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-primary">{{ post.author.user.get_full_name|default:post.author.user.username }}</h3>
+                            <p class="text-[10px] text-slate-400 font-medium">{{ post.author.designation }} @ {{ post.author.company }} • {{ post.created_at|timesince }} ago</p>
+                        </div>
+                    </div>
+                    <button class="text-slate-400 hover:text-primary"><span class="material-symbols-outlined">more_horiz</span></button>
+                </div>
+                <p class="text-on-surface-variant mb-4 leading-relaxed">
+                    {{ post.content }}
+                </p>
+                {% if post.post_image %}
+                    <div class="rounded-xl overflow-hidden mb-4 aspect-video bg-surface-container">
+                <img
+                    src="{{ post.post_image.url }}"
+        class="w-full h-full object-cover"
+        alt="Post Image"
+                >
+                </div>
+                {% endif %}
+                <div class="flex items-center justify-between border-t border-white/20 pt-4">
+                    <div class="flex gap-6">
+                        <button class="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">favorite</span>
+                            <span class="text-xs font-semibold">0</span>
+                        </button>
+                        <button class="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+                            <span class="text-xs font-semibold">0</span>
+                        </button>
+                        <button class="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">share</span>
+                            <span class="text-xs font-semibold">0</span>
+                        </button>
+                    </div>
+                    <button class="text-slate-400 hover:text-primary"><span class="material-symbols-outlined text-[20px]">bookmark</span></button>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <p class="text-center py-10 text-slate-400">No posts yet. Be the first to share an update!</p>
+        {% endfor %}
+    </section>
+
+    <!-- Sidebar (Right) -->
+    <aside class="hidden xl:block w-80 space-y-8 sticky top-28 h-fit">
+        <!-- Trending Hashtags -->
+        <div class="glass-card rounded-xl p-6">
+            <h4 class="font-bold text-primary mb-4 text-sm tracking-tight">Trending Hashtags</h4>
+            <div class="space-y-4">
+                {% for skill in trending_skills %}
+                <div class="group cursor-pointer">
+                    <p class="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">#{{ skill.name|cut:" " }}</p>
+                    <p class="text-[10px] text-slate-400">{{ forloop.counter|add:"100" }} posts</p>
+                </div>
+                {% empty %}
+                <p class="text-xs text-slate-400 italic">No trending topics.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- Suggested Alumni -->
+        <div class="glass-card rounded-xl p-6">
+            <h4 class="font-bold text-primary mb-4 text-sm tracking-tight">Suggested Alumni</h4>
+            <div class="space-y-4">
+                {% for profile in featured_alumni %}
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full overflow-hidden bg-slate-100">
+                        {% if profile.profile_picture %}
+                    <img
+                        class="w-full h-full object-cover"
+                        src="{{ profile.profile_picture.url }}"
+                        alt="{{ profile.user.username }}"
+                    >
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-primary font-bold">
+                        {{ profile.user.username|slice:":1"|upper }}
+                    </div>
+                    {% endif %}
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs font-bold">{{ profile.user.get_full_name|default:profile.user.username }}</p>
+                        <p class="text-[10px] text-slate-400 line-clamp-1">{{ profile.designation }} at {{ profile.company }}</p>
+                    </div>
+                    <button class="material-symbols-outlined text-primary hover:scale-110 transition-transform">person_add</button>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="w-full text-center text-xs font-bold text-primary mt-6 hover:underline">View All Suggestions</button>
+        </div>
+    </aside>
+</div>
+{% endblock %}

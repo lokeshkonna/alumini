@@ -1,0 +1,109 @@
+{% extends 'members/base.html' %}
+
+{% block title %}Join AlumniConnect | The Digital Atelier{% endblock %}
+
+{% block extra_css %}
+.academic-input {
+    background-color: #f2f4f6;
+    border-bottom: 2px solid rgba(117, 118, 130, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.academic-input:focus {
+    background-color: #ffffff;
+    border-bottom-color: #00236f;
+    outline: none;
+    box-shadow: none;
+}
+.mesh-gradient {
+    background-color: #f7f9fb;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(245, 158, 11, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.1) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(245, 158, 11, 0.05) 0px, transparent 50%);
+}
+{% endblock %}
+
+{% block content %}
+<div class="font-body bg-background text-on-background min-h-[calc(100vh-5rem)] mesh-gradient flex flex-col items-center justify-center p-4 md:p-8">
+    <main class="w-full max-w-2xl relative z-0 my-16">
+        <!-- Glassmorphic Signup Card -->
+        <section class="glass-card rounded-[2rem] p-8 md:p-12 shadow-[0_20px_40px_rgba(0,35,111,0.06)] overflow-hidden relative">
+            <div class="relative z-10">
+                <h1 class="font-headline text-4xl font-extrabold text-on-surface mb-2 leading-tight">Create your profile</h1>
+                <p class="text-on-surface-variant mb-10 max-w-md">Join the academic atelier where tradition meets modern professional growth.</p>
+                
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="p-4 bg-red-50 text-red-600 rounded-lg text-sm mb-4">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">Username</label>
+                            {{ form.username }}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">Email</label>
+                            {{ form.email }}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">Password</label>
+                            {{ form.password }}
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">Confirm Password</label>
+                            {{ form.confirm_password }}
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">Role</label>
+                        {{ form.role }}
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest">Department</label>
+                        {{ form.department }}
+                    </div>
+
+                    <div class="pt-4">
+                        <button class="w-full py-5 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold text-lg shadow-[0_10px_25px_rgba(0,35,111,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300" type="submit">
+                            Complete My Registration
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    // Minimal script if needed, but styling is now handled by Django widgets
+</script>
+{% endblock %}

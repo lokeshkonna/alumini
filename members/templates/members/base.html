@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>{% block title %}AlumniConnect | The Digital Atelier{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+        }
+        .tonal-transition-no-border {
+            border: none !important;
+        }
+        .spring-motion-interaction:active {
+            transform: scale(0.9);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        {% block extra_css %}{% endblock %}
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00236f",
+                        "primary-container": "#1e3a8a",
+                        "secondary": "#505f76",
+                        "secondary-container": "#d0e1fb",
+                        "tertiary": "#3e2400",
+                        "tertiary-container": "#5c3800",
+                        "surface": "#f7f9fb",
+                        "on-surface": "#191c1e",
+                        "on-surface-variant": "#444651",
+                        "outline": "#757682",
+                        "outline-variant": "#c5c5d3",
+                        "background": "#f7f9fb",
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+    <!-- Top Navigation Shell -->
+    <nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,35,111,0.06)] h-20 flex items-center justify-between px-8 font-['Plus_Jakarta_Sans'] tonal-transition-no-border">
+        <div class="flex items-center gap-12">
+            <a href="{% url 'index' %}" class="text-2xl font-bold tracking-tight bg-gradient-to-br from-blue-900 to-blue-700 bg-clip-text text-transparent">AlumniConnect</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a class="{% if request.resolver_match.url_name == 'dashboard' %}text-blue-900 font-bold border-b-2 border-blue-900{% else %}text-slate-500 font-medium hover:text-blue-700{% endif %} transition-all duration-300" href="{% url 'dashboard' %}">Dashboard</a>
+                <a class="{% if request.resolver_match.url_name == 'posts_feed' %}text-blue-900 font-bold border-b-2 border-blue-900{% else %}text-slate-500 font-medium hover:text-blue-700{% endif %} transition-all duration-300" href="{% url 'posts_feed' %}">Feed</a>
+                <a class="{% if request.resolver_match.url_name == 'profiles' %}text-blue-900 font-bold border-b-2 border-blue-900{% else %}text-slate-500 font-medium hover:text-blue-700{% endif %} transition-all duration-300" href="{% url 'profiles' %}">Profiles</a>
+                <a class="{% if request.resolver_match.url_name == 'jobs' %}text-blue-900 font-bold border-b-2 border-blue-900{% else %}text-slate-500 font-medium hover:text-blue-700{% endif %} transition-all duration-300" href="{% url 'jobs' %}">Jobs</a>
+                <a class="{% if request.resolver_match.url_name == 'events' %}text-blue-900 font-bold border-b-2 border-blue-900{% else %}text-slate-500 font-medium hover:text-blue-700{% endif %} transition-all duration-300" href="{% url 'events' %}">Events</a>
+                <a class="{% if request.resolver_match.url_name == 'mentorship' %}text-blue-900 font-bold border-b-2 border-blue-900{% else %}text-slate-500 font-medium hover:text-blue-700{% endif %} transition-all duration-300" href="{% url 'mentorship' %}">Mentorship</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="p-2 text-slate-500 hover:text-blue-700 transition-transform scale-105 active:scale-95">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+            {% if user.is_authenticated %}
+                <div class="flex items-center gap-4">
+                    <span class="text-sm font-semibold text-slate-700">{{ user.first_name }}</span>
+                    <a href="{% url 'edit_profile' %}" class="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center border border-white/40 shadow-sm overflow-hidden">
+                        {% if user.profile.profile_picture %}
+                        <img
+                            class="w-full h-full object-cover rounded-full"
+                            src="{{ user.profile.profile_picture.url }}"
+                            alt="{{ user.username }}"
+                        >
+                        {% else %}
+                        <span class="material-symbols-outlined text-primary">
+                            account_circle
+                        </span>
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'logout' %}" class="text-xs font-bold text-red-600 hover:underline">Logout</a>
+                </div>
+            {% else %}
+                <a href="{% url 'login' %}" class="px-6 py-2 bg-primary text-white rounded-full font-bold hover:scale-105 transition-transform active:scale-95">Login</a>
+                <a href="{% url 'signup' %}" class="px-6 py-2 border-2 border-primary text-primary rounded-full font-bold hover:bg-primary/5 transition-colors">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="pt-20">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer Shell -->
+    <footer class="w-full py-12 px-8 mt-20 bg-slate-100 font-['Inter'] text-sm text-slate-500 tonal-transition-no-line border-t border-slate-200">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto">
+            <div>
+                <span class="text-xl font-bold text-blue-900 block mb-6">AlumniConnect</span>
+                <p class="text-slate-500 leading-relaxed">
+                    Bridging generations of excellence through the Digital Atelier. Empowering the future by connecting with the past.
+                </p>
+            </div>
+            <div>
+                <h4 class="font-bold text-on-surface mb-6 uppercase tracking-widest text-xs">Community</h4>
+                <ul class="space-y-4">
+                    <li><a class="text-slate-500 hover:text-blue-900 transition-colors" href="#">Alumni Directory</a></li>
+                    <li><a class="text-slate-500 hover:text-blue-900 transition-colors" href="#">Success Stories</a></li>
+                    <li><a class="text-slate-500 hover:text-blue-900 transition-colors" href="#">Career Resources</a></li>
+                    <li><a class="text-slate-500 hover:text-blue-900 transition-colors" href="#">Giving Back</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-on-surface mb-6 uppercase tracking-widest text-xs">Support</h4>
+                <ul class="space-y-4">
+                    <li><a class="text-slate-500 hover:text-blue-900 transition-colors" href="#">Privacy Policy</a></li>
+                    <li><a class="text-slate-500 hover:text-blue-900 transition-colors" href="#">Terms of Service</a></li>
+                    <li><a class="text-slate-500 hover:text-blue-900 transition-colors" href="#">Contact Support</a></li>
+                    <li><a class="text-slate-500 hover:text-blue-900 transition-colors" href="#">Accessibility</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-on-surface mb-6 uppercase tracking-widest text-xs">Stay Connected</h4>
+                <div class="flex gap-4 mb-6">
+                    <button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm"><span class="material-symbols-outlined text-base">share</span></button>
+                    <button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm"><span class="material-symbols-outlined text-base">hub</span></button>
+                    <button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm"><span class="material-symbols-outlined text-base">groups</span></button>
+                </div>
+                <p class="text-[10px] text-slate-400">© 2024 AlumniConnect. The Digital Atelier.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bottom Navigation Shell (Mobile Only) -->
+    <div class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-white/80 backdrop-blur-2xl shadow-[0_-10px_30px_rgba(0,35,111,0.08)] rounded-t-[2rem] border-t border-white/20">
+        <a href="{% url 'index' %}" class="flex flex-col items-center justify-center {% if request.resolver_match.url_name == 'index' %}bg-blue-900 text-white rounded-2xl p-3 transform -translate-y-2 shadow-lg{% else %}text-slate-400 p-2{% endif %} spring-motion-interaction">
+            <span class="material-symbols-outlined">home</span>
+            <span class="text-[10px] font-medium font-['Inter'] mt-1">Home</span>
+        </a >
+        <a href="{% url 'posts_feed' %}" class="flex flex-col items-center justify-center {% if request.resolver_match.url_name == 'posts_feed' %}bg-blue-900 text-white rounded-2xl p-3 transform -translate-y-2 shadow-lg{% else %}text-slate-400 p-2{% endif %} spring-motion-interaction">
+            <span class="material-symbols-outlined">dynamic_feed</span>
+            <span class="text-[10px] font-medium font-['Inter'] mt-1">Feed</span>
+        </a>
+        <a href="{% url 'messages' %}" class="flex flex-col items-center justify-center {% if request.resolver_match.url_name == 'messages' %}bg-blue-900 text-white rounded-2xl p-3 transform -translate-y-2 shadow-lg{% else %}text-slate-400 p-2{% endif %} spring-motion-interaction">
+            <span class="material-symbols-outlined">chat_bubble</span>
+            <span class="text-[10px] font-medium font-['Inter'] mt-1">Messages</span>
+        </a>
+        <div class="flex flex-col items-center justify-center text-slate-400 p-2 spring-motion-interaction">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="text-[10px] font-medium font-['Inter'] mt-1">Alerts</span>
+        </div>
+        <a href="{% url 'dashboard' %}" class="flex flex-col items-center justify-center {% if request.resolver_match.url_name == 'dashboard' %}bg-blue-900 text-white rounded-2xl p-3 transform -translate-y-2 shadow-lg{% else %}text-slate-400 p-2{% endif %} spring-motion-interaction">
+            <span class="material-symbols-outlined">person</span>
+            <span class="text-[10px] font-medium font-['Inter'] mt-1">Account</span>
+        </a>
+    </div>
+</body>
+</html>

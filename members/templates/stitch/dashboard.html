@@ -1,0 +1,107 @@
+{% extends 'members/base.html' %}
+
+{% block title %}Dashboard | AlumniConnect{% endblock %}
+
+{% block content %}
+<div class="flex">
+    <!-- Main Content Area -->
+    <main class="flex-1 p-8 relative overflow-hidden">
+        <!-- Welcome Message Section -->
+        <header class="mb-12">
+            <h1 class="font-headline text-5xl font-extrabold tracking-tight mb-2">
+                Welcome back, <span class="bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">{% if user.is_authenticated %}{{ user.first_name }}{% else %}{{ profile.user.first_name }}{% endif %}!</span>
+            </h1>
+            <p class="text-on-surface-variant font-medium text-lg">Your academic network is active and growing.</p>
+        </header>
+
+        <!-- Bento Grid Layout -->
+        <div class="grid grid-cols-12 gap-6">
+            <!-- Stats Row -->
+            <div class="col-span-12 lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-xl p-6 flex flex-col justify-between h-40 group hover:scale-[1.02] transition-transform">
+                    <div class="flex justify-between items-start">
+                        <span class="material-symbols-outlined text-primary">group</span>
+                        <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+{{ stats.connections|add:"-1" }}</span>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold font-headline">{{ stats.connections }}</p>
+                        <p class="text-sm text-on-surface-variant font-medium">Connections count</p>
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-6 flex flex-col justify-between h-40 group hover:scale-[1.02] transition-transform">
+                    <div class="flex justify-between items-start">
+                        <span class="material-symbols-outlined text-primary">work</span>
+                        <span class="text-xs font-bold text-primary bg-primary-fixed px-2 py-1 rounded-full">New</span>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold font-headline">{{ stats.jobs }}</p>
+                        <p class="text-sm text-on-surface-variant font-medium">Job recommendations</p>
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-6 flex flex-col justify-between h-40 group hover:scale-[1.02] transition-transform">
+                    <div class="flex justify-between items-start">
+                        <span class="material-symbols-outlined text-primary">school</span>
+                        <span class="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-full">Live</span>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold font-headline">{{ stats.events }}</p>
+                        <p class="text-sm text-on-surface-variant font-medium">Upcoming Events</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Panel -->
+            <div class="col-span-12 lg:col-span-4 lg:row-span-2">
+                <div class="glass-card rounded-xl p-6 h-full flex flex-col">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-headline font-bold text-xl">Updates & Alerts</h3>
+                        <button class="text-primary text-xs font-bold hover:underline">Mark all read</button>
+                    </div>
+                    <div class="space-y-6 flex-1">
+                        {% for job in latest_jobs %}
+                        <div class="flex gap-4">
+                            <div class="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+                            <div>
+                                <p class="text-sm font-semibold">New Job: {{ job.title }} at {{ job.company }}</p>
+                                <p class="text-xs text-on-surface-variant mt-1">{{ job.posted_at|timesince }} ago</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% for event in upcoming_events %}
+                        <div class="flex gap-4">
+                            <div class="w-2 h-2 rounded-full bg-slate-200 mt-2 flex-shrink-0"></div>
+                            <div>
+                                <p class="text-sm font-medium text-slate-600">Event coming up: {{ event.title }}</p>
+                                <p class="text-xs text-on-surface-variant mt-1">{{ event.date|date:"M d" }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="mt-8 w-full py-4 bg-surface-container-low text-on-surface font-bold rounded-xl hover:bg-surface-container transition-colors">
+                        View All Activity
+                    </button>
+                </div>
+            </div>
+
+            <!-- Graph Analytics Mockup -->
+            <div class="col-span-12 lg:col-span-8">
+                <div class="glass-card rounded-xl p-8">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 class="font-headline font-bold text-2xl">Network Analytics</h3>
+                            <p class="text-sm text-on-surface-variant">Growth and engagement trends</p>
+                        </div>
+                    </div>
+                    <div class="h-64 flex items-end justify-between gap-4 px-2">
+                        <div class="flex-1 bg-primary-fixed rounded-t-lg h-[40%]"></div>
+                        <div class="flex-1 bg-primary-fixed rounded-t-lg h-[65%]"></div>
+                        <div class="flex-1 bg-primary-fixed rounded-t-lg h-[55%]"></div>
+                        <div class="flex-1 bg-primary rounded-t-lg h-[90%]"></div>
+                        <div class="flex-1 bg-primary-fixed rounded-t-lg h-[75%]"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
